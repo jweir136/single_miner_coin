@@ -1,0 +1,1 @@
+# single_miner_coin
