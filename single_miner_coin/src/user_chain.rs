@@ -28,10 +28,12 @@ impl UserBlock {
 
         loop {
             let proof_hash: Hash = sha256_hash(format!("{}", proof).as_bytes());
-            let combined_hash = format!("{:?}", sha256_hash(format!("{:?}{:?}", hash, proof_hash).as_bytes())).to_string();
+            let combined_hash = &format!("{:?}", sha256_hash(format!("{:?}{:?}", hash, proof_hash).as_bytes())).to_string()[7..];
 
-            if &combined_hash[..6] == "000000" {
+            if &combined_hash[..12] == "000000000000" {
                 return proof_hash;
+            } else {
+                proof += 1;
             }
         }
     }
@@ -56,4 +58,20 @@ mod tests {
 
         block.hash();
     }
+
+    #[test]
+    fn hash_pow_test() {
+        let username = "Jake".to_string();
+        let key = [0 as u8; 32];
+        let last = sha256_hash("START".as_bytes());
+
+        let block = UserBlock {
+            proof: UserBlock::calculate_proof_of_work(
+                sha256_hash(format!("{}{:?}{:?}", &username, &key, &last).as_bytes())
+            ),
+            username: username,
+            key: key,
+            last: last
+        };
+    }   
 }
