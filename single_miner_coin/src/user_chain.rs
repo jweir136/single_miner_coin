@@ -14,6 +14,15 @@ struct UserBlock {
 
 impl UserBlock {
 
+    pub fn new(username: String, key: PublicKey, last_hash: Hash) -> Self {
+        UserBlock {
+            proof: UserBlock::calculate_proof_of_work(sha256_hash(format!("{}{:?}{:?}", &username, &key, &last_hash).as_bytes())),
+            username: username,
+            key: key,
+            last: last_hash,
+        }
+    }
+
     fn calculate_proof_of_work(hash: Hash) -> Hash {
         let mut proof: u32 = 0;
 
